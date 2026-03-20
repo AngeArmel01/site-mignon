@@ -66,13 +66,16 @@ button:hover { transform: scale(1.1); }
   color: white;
   box-shadow: 0 0 15px rgba(0,0,0,0.2);
 }
+
+/* Lecteur audio caché mais autoplay */
+audio { display: none; }
 </style>
 </head>
 
 <body>
 
 <div class="container">
-  <h1>Hey PRENOM… 😊</h1>
+  <h1>Hey Damo… 😊</h1>
   <p>J’ai une petite question pour toi…</p>
   <p>Si je te faisais sourire là maintenant…<br>tu me le rendrais ? ❤️</p>
 
@@ -80,11 +83,13 @@ button:hover { transform: scale(1.1); }
   <button id="no">Je réfléchis…</button>
 </div>
 
-<!-- Musique intégrée depuis YouTube -->
-<div style="margin-top:30px;">
-  <iframe width="0" height="0" src="https://www.youtube.com/embed/uxjhN_Donfw?autoplay=1&loop=1&playlist=uxjhN_Donfw" 
-    title="Gracie Abrams - I Love You, I'm Sorry" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-</div>
+<!-- Musique directe -->
+<audio id="music" autoplay loop>
+  <source src="Apple Music
+https://music.apple.com · 6 janv. 2025
+I Love You, I'm Sorry par Gracie Abrams sur Apple Music" type="audio/mpeg">
+  Ton navigateur ne supporte pas l’audio.
+</audio>
 
 <script>
 // Bouton "non" qui fuit 😈
