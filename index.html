@@ -4,117 +4,156 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pour toi ❤️</title>
-
 <style>
-body {
-  margin: 0;
-  padding: 0;
-  text-align: center;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #ffe6f0, #fff);
-  overflow: hidden;
-  animation: fadeIn 1.5s ease-in;
-}
-
-@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-
-.container { margin-top: 20vh; padding: 20px; }
-
-h1 { font-size: 2em; color: #444; animation: pop 1s ease; }
-@keyframes pop { 0% {transform: scale(0.8);} 100% {transform: scale(1);} }
-
-p { font-size: 1.2em; color: #666; }
-
-button {
-  padding: 15px 25px;
-  font-size: 18px;
-  border-radius: 15px;
-  border: none;
-  cursor: pointer;
-  margin: 15px;
-  transition: 0.3s;
-}
-button:hover { transform: scale(1.1); }
-
-#yes {
-  background: #ff4d6d;
-  color: white;
-  box-shadow: 0 0 20px rgba(255,0,100,0.5);
-}
-
-#no {
-  position: fixed;
-  background: #ccc;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* Cœurs */
-.heart {
-  position: fixed;
-  top: -10px;
-  font-size: 18px;
-  animation: fall linear infinite;
-}
-@keyframes fall { to {transform: translateY(100vh);} }
-
-/* Bouton WhatsApp */
-.whatsapp {
-  margin-top: 30px;
-  background: #25D366;
-  color: white;
-  box-shadow: 0 0 15px rgba(0,0,0,0.2);
-}
-
-/* Lecteur audio caché mais autoplay */
-audio { display: none; }
+  body {
+    margin: 0; padding: 0; text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #ffe6f0, #fff);
+    overflow: hidden;
+    animation: fadeIn 1.5s ease-in;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .container { margin-top: 20vh; padding: 20px; }
+  h1 { font-size: 2em; color: #444; animation: pop 1s ease; }
+  @keyframes pop { 0% { transform: scale(0.8); } 100% { transform: scale(1); } }
+  p { font-size: 1.2em; color: #666; }
+  button {
+    padding: 15px 25px; font-size: 18px;
+    border-radius: 15px; border: none;
+    cursor: pointer; margin: 15px; transition: transform 0.3s;
+  }
+  button:hover { transform: scale(1.1); }
+  #yes {
+    background: #ff4d6d; color: white;
+    box-shadow: 0 0 20px rgba(255,0,100,0.5);
+  }
+  #no {
+    position: fixed; background: #ccc; color: #333;
+    transition: left 0.15s ease, top 0.15s ease;
+  }
+  .heart {
+    position: fixed; top: -10px; font-size: 18px;
+    pointer-events: none; animation: fall linear infinite;
+  }
+  @keyframes fall { to { transform: translateY(100vh); } }
+  /* YouTube caché */
+  #yt-player {
+    position: fixed; top: -9999px; left: -9999px;
+    width: 1px; height: 1px; opacity: 0;
+    pointer-events: none;
+  }
+  #music-note {
+    position: fixed; bottom: 12px; right: 14px;
+    font-size: 22px; cursor: pointer;
+    opacity: 0.5; transition: opacity 0.3s;
+    user-select: none; z-index: 999;
+  }
+  #music-note:hover { opacity: 1; }
 </style>
 </head>
-
 <body>
 
-<div class="container">
-  <h1>Hey DAMO… 😊</h1>
-  <p>J’ai une petite question pour toi…</p>
-  <p>Si je te faisais sourire là maintenant…<br>tu me le rendrais ? ❤️</p>
+<!-- ✅ CHANGER LE PRÉNOM ICI -->
+<script> const prenom = "DAMO"; </script>
 
+<div class="container" id="main">
+  <h1 id="titre">Hey … 😊</h1>
+  <p>J'ai une petite question pour toi…</p>
+  <p>Si je te faisais sourire là maintenant…<br>tu me le rendrais ? ❤️</p>
   <button id="yes" onclick="yesClicked()">Bien sûr 😊</button>
   <button id="no">Je réfléchis…</button>
 </div>
 
-<!-- Musique directe -->
-<audio id="music" autoplay loop>
-  <source src="Apple Music
-https://music.apple.com · 6 janv. 2025
-I Love You, I'm Sorry par Gracie Abrams sur Apple Music" type="audio/mpeg">
-  Ton navigateur ne supporte pas l’audio.
-</audio>
+<span id="music-note" title="Musique">🎵</span>
+
+<!--
+  ✅ MUSIQUE YOUTUBE :
+  Remplace VIDEO_ID par l'ID YouTube de la chanson.
+  Ex : si l'URL est youtube.com/watch?v=abc123, mets abc123
+  L'ID de "I Love You, I'm Sorry" de Gracie Abrams : r9hk5MDPJLY
+  (vérifie sur YouTube que c'est le bon)
+-->
+<iframe
+  id="yt-player"
+  src="https://www.youtube.com/embed/r9hk5MDPJLY?autoplay=1&loop=1&playlist=r9hk5MDPJLY&controls=0&mute=0"
+  allow="autoplay"
+  frameborder="0">
+</iframe>
 
 <script>
-// Bouton "non" qui fuit 😈
-const noBtn = document.getElementById("no");
-document.addEventListener("mousemove", function(e) {
-  const rect = noBtn.getBoundingClientRect();
-  if (Math.abs(e.clientX - rect.left) < 100 && Math.abs(e.clientY - rect.top) < 100) {
-    noBtn.style.left = Math.random() * window.innerWidth + "px";
-    noBtn.style.top = Math.random() * window.innerHeight + "px";
+/* ── Prénom ── */
+document.getElementById("titre").textContent = "Hey " + prenom + "… 😊";
+
+/* ── Musique YouTube ── */
+let muted = false;
+const yt = document.getElementById("yt-player");
+const note = document.getElementById("music-note");
+
+// L'iframe YouTube démarre automatiquement
+// Le bouton 🎵 coupe/remet le son via mute dans l'URL
+note.addEventListener("click", () => {
+  muted = !muted;
+  const src = yt.src;
+  if (muted) {
+    yt.src = src.replace("mute=0", "mute=1");
+    note.textContent = "🔇";
+  } else {
+    yt.src = src.replace("mute=1", "mute=0");
+    note.textContent = "🔊";
   }
 });
 
-// Quand on clique "oui" 💖
-function yesClicked() {
-  document.body.innerHTML = `
-    <div class="container">
-      <h1>Je le savais 😌❤️</h1>
-      <p>Franchement… tu viens de me faire sourire aussi 😏</p>
-      <p>On devrait vraiment tester ça en vrai 👀</p>
+// Déverrouille l'autoplay au premier clic
+document.addEventListener("click", () => {
+  note.textContent = "🔊";
+}, { once: true });
 
-      <button class="whatsapp" onclick="openWhatsApp()">
-        Viens me parler 💬
-      </button>
-    </div>
+/* ── Bouton "Je réfléchis" ── */
+const noBtn = document.getElementById("no");
+
+function centerNoBtn() {
+  noBtn.style.left = Math.round(window.innerWidth / 2 - noBtn.offsetWidth / 2) + "px";
+  noBtn.style.top  = Math.round(window.innerHeight / 2 + 60) + "px";
+}
+window.addEventListener("load", centerNoBtn);
+window.addEventListener("resize", centerNoBtn);
+
+document.addEventListener("mousemove", function(e) {
+  const rect = noBtn.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top  + rect.height / 2;
+  if (Math.abs(e.clientX - cx) < 130 && Math.abs(e.clientY - cy) < 70) {
+    const margin = 20;
+    const maxX = window.innerWidth  - noBtn.offsetWidth  - margin;
+    const maxY = window.innerHeight - noBtn.offsetHeight - margin;
+    noBtn.style.left = Math.floor(Math.random() * maxX + margin) + "px";
+    noBtn.style.top  = Math.floor(Math.random() * maxY + margin) + "px";
+  }
+});
+
+noBtn.addEventListener("touchstart", function(e) {
+  e.preventDefault();
+  const margin = 20;
+  const maxX = window.innerWidth  - noBtn.offsetWidth  - margin;
+  const maxY = window.innerHeight - noBtn.offsetHeight - margin;
+  noBtn.style.left = Math.floor(Math.random() * maxX + margin) + "px";
+  noBtn.style.top  = Math.floor(Math.random() * maxY + margin) + "px";
+}, { passive: false });
+
+/* ── Clic "Oui" ── */
+function yesClicked() {
+  document.getElementById("main").innerHTML = `
+    <h1>Je le savais 😌❤️</h1>
+    <p>Franchement… tu viens de me faire sourire aussi 😏</p>
+    <p>On devrait vraiment tester ça en vrai 👀</p>
+    <button onclick="openWhatsApp()"
+      style="margin-top:30px;padding:15px 25px;font-size:18px;border-radius:15px;
+             border:none;cursor:pointer;background:#25D366;color:white;
+             box-shadow:0 0 15px rgba(0,0,0,.2);">
+      Viens me parler 💬
+    </button>
   `;
+  noBtn.remove();
   startHearts();
 }
 
@@ -122,16 +161,16 @@ function openWhatsApp() {
   window.open("https://wa.me/22503881311", "_blank");
 }
 
-// Pluie de cœurs 💓
+/* ── Pluie de cœurs ── */
 function startHearts() {
   setInterval(() => {
     const heart = document.createElement("div");
-    heart.classList.add("heart");
-    heart.innerHTML = "💓";
+    heart.className = "heart";
+    heart.textContent = ["💓","💖","💗","💕"][Math.floor(Math.random()*4)];
     heart.style.left = Math.random() * 100 + "vw";
     heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
     document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 5000);
+    setTimeout(() => heart.remove(), 5500);
   }, 150);
 }
 </script>
