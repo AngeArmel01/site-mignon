@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pour toi ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #ffe6f0, #fff);
+  overflow: hidden;
+  animation: fadeIn 1.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+.container {
+  margin-top: 20vh;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 2em;
+  color: #444;
+  animation: pop 1s ease;
+}
+
+@keyframes pop {
+  0% {transform: scale(0.8);}
+  100% {transform: scale(1);}
+}
+
+p {
+  font-size: 1.2em;
+  color: #666;
+}
+
+button {
+  padding: 15px 25px;
+  font-size: 18px;
+  border-radius: 15px;
+  border: none;
+  cursor: pointer;
+  margin: 15px;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.1);
+}
+
+#yes {
+  background: #ff4d6d;
+  color: white;
+  box-shadow: 0 0 20px rgba(255, 0, 100, 0.5);
+}
+
+#no {
+  position: absolute;
+  background: #ccc;
+}
+
+/* Cœurs */
+.heart {
+  position: fixed;
+  top: -10px;
+  font-size: 18px;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh);
+  }
+}
+
+/* Bouton final */
+.whatsapp {
+  margin-top: 30px;
+  background: #25D366;
+  color: white;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Hey PRENOM… 😊</h1>
+  <p>J’ai une petite question pour toi…</p>
+  <p>Si je te faisais sourire là maintenant…<br>tu me le rendrais ? ❤️</p>
+
+  <button id="yes" onclick="yesClicked()">Bien sûr 😊</button>
+  <button id="no">Je réfléchis…</button>
+</div>
+
+<audio autoplay loop>
+  <source src="https://www.fesliyanstudios.com/play-mp3/387" type="audio/mpeg">
+</audio>
+
+<script>
+const noBtn = document.getElementById("no");
+
+// Bouton intelligent 😈
+document.addEventListener("mousemove", function(e) {
+  const rect = noBtn.getBoundingClientRect();
+  const distX = Math.abs(e.clientX - rect.left);
+  const distY = Math.abs(e.clientY - rect.top);
+
+  if (distX < 100 && distY < 100) {
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight;
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  }
+});
+
+// Click YES 💖
+function yesClicked() {
+  document.body.innerHTML = `
+    <div class="container">
+      <h1>Je le savais 😌❤️</h1>
+      <p>Franchement… tu viens de me faire sourire aussi 😏</p>
+      <p>On devrait vraiment tester ça en vrai 👀</p>
+
+      <button class="whatsapp" onclick="openWhatsApp()">
+        Viens me parler 💬
+      </button>
+    </div>
+  `;
+
+  startHearts();
+}
+
+// WhatsApp redirect
+function openWhatsApp() {
+  window.open("https://wa.me/0103881311", "_blank");
+}
+
+// Pluie de cœurs 💓
+function startHearts() {
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "💓";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 5000);
+  }, 150);
+}
+</script>
+
+</body>
+</html>
