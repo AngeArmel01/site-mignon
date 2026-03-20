@@ -16,31 +16,14 @@ body {
   animation: fadeIn 1.5s ease-in;
 }
 
-@keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
-}
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
 
-.container {
-  margin-top: 20vh;
-  padding: 20px;
-}
+.container { margin-top: 20vh; padding: 20px; }
 
-h1 {
-  font-size: 2em;
-  color: #444;
-  animation: pop 1s ease;
-}
+h1 { font-size: 2em; color: #444; animation: pop 1s ease; }
+@keyframes pop { 0% {transform: scale(0.8);} 100% {transform: scale(1);} }
 
-@keyframes pop {
-  0% {transform: scale(0.8);}
-  100% {transform: scale(1);}
-}
-
-p {
-  font-size: 1.2em;
-  color: #666;
-}
+p { font-size: 1.2em; color: #666; }
 
 button {
   padding: 15px 25px;
@@ -51,20 +34,20 @@ button {
   margin: 15px;
   transition: 0.3s;
 }
-
-button:hover {
-  transform: scale(1.1);
-}
+button:hover { transform: scale(1.1); }
 
 #yes {
   background: #ff4d6d;
   color: white;
-  box-shadow: 0 0 20px rgba(255, 0, 100, 0.5);
+  box-shadow: 0 0 20px rgba(255,0,100,0.5);
 }
 
 #no {
-  position: absolute;
+  position: fixed;
   background: #ccc;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* Cœurs */
@@ -74,14 +57,9 @@ button:hover {
   font-size: 18px;
   animation: fall linear infinite;
 }
+@keyframes fall { to {transform: translateY(100vh);} }
 
-@keyframes fall {
-  to {
-    transform: translateY(100vh);
-  }
-}
-
-/* Bouton final */
+/* Bouton WhatsApp */
 .whatsapp {
   margin-top: 30px;
   background: #25D366;
@@ -102,28 +80,24 @@ button:hover {
   <button id="no">Je réfléchis…</button>
 </div>
 
-<audio autoplay loop>
-  <source src="https://www.fesliyanstudios.com/play-mp3/387" type="audio/mpeg">
-</audio>
+<!-- Musique intégrée depuis YouTube -->
+<div style="margin-top:30px;">
+  <iframe width="0" height="0" src="https://www.youtube.com/embed/uxjhN_Donfw?autoplay=1&loop=1&playlist=uxjhN_Donfw" 
+    title="Gracie Abrams - I Love You, I'm Sorry" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
 
 <script>
+// Bouton "non" qui fuit 😈
 const noBtn = document.getElementById("no");
-
-// Bouton intelligent 😈
 document.addEventListener("mousemove", function(e) {
   const rect = noBtn.getBoundingClientRect();
-  const distX = Math.abs(e.clientX - rect.left);
-  const distY = Math.abs(e.clientY - rect.top);
-
-  if (distX < 100 && distY < 100) {
-    const x = Math.random() * window.innerWidth;
-    const y = Math.random() * window.innerHeight;
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
+  if (Math.abs(e.clientX - rect.left) < 100 && Math.abs(e.clientY - rect.top) < 100) {
+    noBtn.style.left = Math.random() * window.innerWidth + "px";
+    noBtn.style.top = Math.random() * window.innerHeight + "px";
   }
 });
 
-// Click YES 💖
+// Quand on clique "oui" 💖
 function yesClicked() {
   document.body.innerHTML = `
     <div class="container">
@@ -136,13 +110,11 @@ function yesClicked() {
       </button>
     </div>
   `;
-
   startHearts();
 }
 
-// WhatsApp redirect
 function openWhatsApp() {
-  window.open("https://wa.me/+225 0103881311", "_blank");
+  window.open("https://wa.me/22503881311", "_blank");
 }
 
 // Pluie de cœurs 💓
@@ -154,10 +126,7 @@ function startHearts() {
     heart.style.left = Math.random() * 100 + "vw";
     heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
     document.body.appendChild(heart);
-
-    setTimeout(() => {
-      heart.remove();
-    }, 5000);
+    setTimeout(() => heart.remove(), 5000);
   }, 150);
 }
 </script>
