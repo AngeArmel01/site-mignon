@@ -14,8 +14,8 @@
   }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   .container { margin-top: 20vh; padding: 20px; }
-  h1 { font-size: 2em; color: #444; animation: pop 1s ease; }
-  @keyframes pop { 0% { transform: scale(0.8); } 100% { transform: scale(1); } }
+  h1 { font-size: 2em; color: #444; animation: pop 0.5s ease; }
+  @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
   p { font-size: 1.2em; color: #666; }
   button {
     padding: 15px 25px; font-size: 18px;
@@ -36,19 +36,41 @@
     pointer-events: none; animation: fall linear infinite;
   }
   @keyframes fall { to { transform: translateY(100vh); } }
-  /* YouTube caché */
-  #yt-player {
-    position: fixed; top: -9999px; left: -9999px;
-    width: 1px; height: 1px; opacity: 0;
-    pointer-events: none;
-  }
   #music-note {
     position: fixed; bottom: 12px; right: 14px;
     font-size: 22px; cursor: pointer;
-    opacity: 0.5; transition: opacity 0.3s;
+    opacity: 0.6; transition: opacity 0.3s;
     user-select: none; z-index: 999;
   }
   #music-note:hover { opacity: 1; }
+
+  /* Bouton de confirmation, centré, animé */
+  .confirm-btn {
+    background: #ff4d6d; color: white;
+    box-shadow: 0 0 20px rgba(255,0,100,0.5);
+    animation: pop 0.4s ease;
+  }
+
+  /* Barre de progression des "sûre" */
+  .progress-bar {
+    margin: 20px auto;
+    width: 220px;
+    height: 8px;
+    background: #ffc0cb;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #ff4d6d;
+    border-radius: 10px;
+    transition: width 0.4s ease;
+  }
+  .step-hint {
+    font-size: 0.85em;
+    color: #bbb;
+    margin-top: 4px;
+  }
 </style>
 </head>
 <body>
@@ -66,47 +88,28 @@
 
 <span id="music-note" title="Musique">🎵</span>
 
-<!--
-  ✅ MUSIQUE YOUTUBE :
-  Remplace VIDEO_ID par l'ID YouTube de la chanson.
-  Ex : si l'URL est youtube.com/watch?v=abc123, mets abc123
-  L'ID de "I Love You, I'm Sorry" de Gracie Abrams : r9hk5MDPJLY
-  (vérifie sur YouTube que c'est le bon)
--->
-<iframe
-  id="yt-player"
-  src="https://www.youtube.com/embed/r9hk5MDPJLY?autoplay=1&loop=1&playlist=r9hk5MDPJLY&controls=0&mute=0"
-  allow="autoplay"
-  frameborder="0">
-</iframe>
+<audio id="music" loop>
+  <source src="musique.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 /* ── Prénom ── */
 document.getElementById("titre").textContent = "Hey " + prenom + "… 😊";
 
-/* ── Musique YouTube ── */
-let muted = false;
-const yt = document.getElementById("yt-player");
-const note = document.getElementById("music-note");
+/* ── Musique MP3 ── */
+const music = document.getElementById("music");
+const note  = document.getElementById("music-note");
 
-// L'iframe YouTube démarre automatiquement
-// Le bouton 🎵 coupe/remet le son via mute dans l'URL
-note.addEventListener("click", () => {
-  muted = !muted;
-  const src = yt.src;
-  if (muted) {
-    yt.src = src.replace("mute=0", "mute=1");
-    note.textContent = "🔇";
-  } else {
-    yt.src = src.replace("mute=1", "mute=0");
-    note.textContent = "🔊";
-  }
+document.addEventListener("click", function startAudio() {
+  music.play().then(() => { note.textContent = "🔊"; }).catch(() => {});
+  document.removeEventListener("click", startAudio);
+}, { capture: true });
+
+note.addEventListener("click", (e) => {
+  e.stopPropagation();
+  if (music.paused) { music.play(); note.textContent = "🔊"; }
+  else              { music.pause(); note.textContent = "🔇"; }
 });
-
-// Déverrouille l'autoplay au premier clic
-document.addEventListener("click", () => {
-  note.textContent = "🔊";
-}, { once: true });
 
 /* ── Bouton "Je réfléchis" ── */
 const noBtn = document.getElementById("no");
@@ -124,24 +127,84 @@ document.addEventListener("mousemove", function(e) {
   const cy = rect.top  + rect.height / 2;
   if (Math.abs(e.clientX - cx) < 130 && Math.abs(e.clientY - cy) < 70) {
     const margin = 20;
-    const maxX = window.innerWidth  - noBtn.offsetWidth  - margin;
-    const maxY = window.innerHeight - noBtn.offsetHeight - margin;
-    noBtn.style.left = Math.floor(Math.random() * maxX + margin) + "px";
-    noBtn.style.top  = Math.floor(Math.random() * maxY + margin) + "px";
+    noBtn.style.left = Math.floor(Math.random() * (window.innerWidth  - noBtn.offsetWidth  - margin) + margin) + "px";
+    noBtn.style.top  = Math.floor(Math.random() * (window.innerHeight - noBtn.offsetHeight - margin) + margin) + "px";
   }
 });
 
 noBtn.addEventListener("touchstart", function(e) {
   e.preventDefault();
   const margin = 20;
-  const maxX = window.innerWidth  - noBtn.offsetWidth  - margin;
-  const maxY = window.innerHeight - noBtn.offsetHeight - margin;
-  noBtn.style.left = Math.floor(Math.random() * maxX + margin) + "px";
-  noBtn.style.top  = Math.floor(Math.random() * maxY + margin) + "px";
+  noBtn.style.left = Math.floor(Math.random() * (window.innerWidth  - noBtn.offsetWidth  - margin) + margin) + "px";
+  noBtn.style.top  = Math.floor(Math.random() * (window.innerHeight - noBtn.offsetHeight - margin) + margin) + "px";
 }, { passive: false });
 
-/* ── Clic "Oui" ── */
+/* ══════════════════════════════════════════
+   ── Séquence de confirmation (5 étapes) ──
+   ══════════════════════════════════════════
+
+   Étape 1 → "Tu en es sûre ?"
+   Étape 2 → "Tu en es sûre sûre ?"
+   Étape 3 → "Tu en es sûre sûre sûre ?"
+   Étape 4 → "Tu en es sûre sûre sûre sûre ?"
+   Étape 5 → "Tu en es sûre sûre sûre sûre sûre ?"
+   → Final  → écran final ❤️
+*/
+
+let confirmStep = 0;
+const totalSteps = 5;
+
+// Génère "sûre" répété n fois
+function sureTimes(n) {
+  return Array(n).fill("sûre").join(" ");
+}
+
+// Textes et emojis qui évoluent à chaque étape
+const stepEmojis   = ["🤔", "👀", "😏", "😭", "🥹"];
+const stepSubtexts = [
+  "Réfléchis bien…",
+  "T'es vraiment sûre ?",
+  "Hmmm… vraiment vraiment ?",
+  "Ok ok… je te crois presque 😅",
+  "Dernière chance de changer d'avis 👀"
+];
+
 function yesClicked() {
+  // Retire le bouton "Je réfléchis" dès le premier oui
+  if (noBtn && noBtn.parentNode) noBtn.remove();
+
+  confirmStep++;
+
+  if (confirmStep <= totalSteps) {
+    // Construit la question avec "sûre" répété
+    const question = "Tu en es " + sureTimes(confirmStep) + " ?";
+    const emoji    = stepEmojis[confirmStep - 1];
+    const subtext  = stepSubtexts[confirmStep - 1];
+    const progress = Math.round((confirmStep / totalSteps) * 100);
+
+    document.getElementById("main").innerHTML = `
+      <h1 style="font-size:1.6em;">${emoji} ${question}</h1>
+      <p style="color:#aaa; font-style:italic;">${subtext}</p>
+
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${progress}%;"></div>
+      </div>
+      <p class="step-hint">${confirmStep} / ${totalSteps}</p>
+
+      <button class="confirm-btn" onclick="yesClicked()"
+        style="padding:15px 25px;font-size:18px;border-radius:15px;
+               border:none;cursor:pointer;margin:15px;">
+        Oui, certaine ! 💖
+      </button>
+    `;
+
+  } else {
+    // ── Écran final ──
+    showFinalScreen();
+  }
+}
+
+function showFinalScreen() {
   document.getElementById("main").innerHTML = `
     <h1>Je le savais 😌❤️</h1>
     <p>Franchement… tu viens de me faire sourire aussi 😏</p>
@@ -153,7 +216,6 @@ function yesClicked() {
       Viens me parler 💬
     </button>
   `;
-  noBtn.remove();
   startHearts();
 }
 
