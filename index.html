@@ -10,9 +10,7 @@
     font-family: 'Segoe UI', sans-serif;
     background: linear-gradient(135deg, #ffe6f0, #fff);
     overflow: hidden;
-    animation: fadeIn 1.5s ease-in;
   }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   .container { margin-top: 20vh; padding: 20px; }
   h1 { font-size: 2em; color: #444; animation: pop 0.5s ease; }
   @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
@@ -36,49 +34,143 @@
     pointer-events: none; animation: fall linear infinite;
   }
   @keyframes fall { to { transform: translateY(100vh); } }
+
+  /* ── Bouton musique discret ── */
   #music-note {
     position: fixed; bottom: 12px; right: 14px;
-    font-size: 22px; cursor: pointer;
-    opacity: 0.6; transition: opacity 0.3s;
+    font-size: 20px; cursor: pointer;
+    opacity: 0.5; transition: opacity 0.3s;
     user-select: none; z-index: 999;
   }
   #music-note:hover { opacity: 1; }
 
-  /* Bouton de confirmation, centré, animé */
   .confirm-btn {
     background: #ff4d6d; color: white;
     box-shadow: 0 0 20px rgba(255,0,100,0.5);
     animation: pop 0.4s ease;
   }
-
-  /* Barre de progression des "sûre" */
   .progress-bar {
-    margin: 20px auto;
-    width: 220px;
-    height: 8px;
-    background: #ffc0cb;
-    border-radius: 10px;
-    overflow: hidden;
+    margin: 20px auto; width: 220px;
+    height: 8px; background: #ffc0cb;
+    border-radius: 10px; overflow: hidden;
   }
   .progress-fill {
-    height: 100%;
-    background: #ff4d6d;
-    border-radius: 10px;
-    transition: width 0.4s ease;
+    height: 100%; background: #ff4d6d;
+    border-radius: 10px; transition: width 0.4s ease;
   }
-  .step-hint {
-    font-size: 0.85em;
-    color: #bbb;
-    margin-top: 4px;
+  .step-hint { font-size: 0.85em; color: #bbb; margin-top: 4px; }
+
+  /* ════════════════════════════════
+     ÉCRAN DE DÉMARRAGE
+  ════════════════════════════════ */
+  #splash {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #ffe6f0, #fff5f8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    cursor: pointer;
+    transition: opacity 0.8s ease;
+  }
+  #splash.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Cercle pulsant autour de l'icône */
+  .splash-ring {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: rgba(255, 77, 109, 0.12);
+    display: flex; align-items: center; justify-content: center;
+    animation: pulse-ring 1.8s ease-in-out infinite;
+    margin-bottom: 28px;
+  }
+  @keyframes pulse-ring {
+    0%   { transform: scale(1);    box-shadow: 0 0 0 0 rgba(255,77,109,0.35); }
+    50%  { transform: scale(1.06); box-shadow: 0 0 0 18px rgba(255,77,109,0); }
+    100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(255,77,109,0); }
+  }
+
+  .splash-icon { font-size: 52px; }
+
+  .splash-title {
+    font-size: 1.5em;
+    color: #ff4d6d;
+    font-weight: 700;
+    margin: 0 0 8px;
+    letter-spacing: 0.5px;
+  }
+  .splash-sub {
+    font-size: 1em;
+    color: #aaa;
+    margin: 0 0 32px;
+  }
+
+  /* Bouton "Lancer" */
+  .splash-btn {
+    background: #ff4d6d;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 16px 40px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(255,77,109,0.45);
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: pop 0.6s ease 0.3s both;
+    letter-spacing: 0.5px;
+  }
+  .splash-btn:hover {
+    transform: scale(1.06);
+    box-shadow: 0 10px 30px rgba(255,77,109,0.55);
+  }
+
+  /* Petits cœurs décoratifs en fond du splash */
+  .splash-deco {
+    position: absolute;
+    font-size: 22px;
+    opacity: 0.18;
+    animation: float 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0);  }
+    50%       { transform: translateY(-12px); }
   }
 </style>
 </head>
 <body>
 
-<!-- ✅ CHANGER LE PRÉNOM ICI -->
-<script> const prenom = "DAMO"; </script>
+<!-- ✅ 1. CHANGE LE PRÉNOM ICI  -->
+<!-- ✅ 2. CHANGE LE NOM DU MP3  -->
+<script>
+  const prenom     = "DAMO";
+  const fichierMp3 = "musique.mp3";
+</script>
 
-<div class="container" id="main">
+<!-- ══ ÉCRAN DE DÉMARRAGE ══ -->
+<div id="splash" onclick="lancerExperience()">
+  <!-- Cœurs déco -->
+  <span class="splash-deco" style="top:10%; left:8%;  animation-delay:0s;">💗</span>
+  <span class="splash-deco" style="top:15%; right:10%; animation-delay:0.8s;">💕</span>
+  <span class="splash-deco" style="bottom:18%; left:12%; animation-delay:1.4s;">💓</span>
+  <span class="splash-deco" style="bottom:12%; right:8%; animation-delay:0.4s;">💖</span>
+
+  <div class="splash-ring">
+    <span class="splash-icon">🎵</span>
+  </div>
+  <p class="splash-title">Un message pour toi…</p>
+  <p class="splash-sub">Active le son avant de continuer 🎧</p>
+  <button class="splash-btn">▶ &nbsp;Clique ici pour commencer</button>
+</div>
+
+<!-- ══ CONTENU PRINCIPAL ══ -->
+<div class="container" id="main" style="opacity:0; transition: opacity 0.8s ease;">
   <h1 id="titre">Hey … 😊</h1>
   <p>J'ai une petite question pour toi…</p>
   <p>Si je te faisais sourire là maintenant…<br>tu me le rendrais ? ❤️</p>
@@ -86,25 +178,45 @@
   <button id="no">Je réfléchis…</button>
 </div>
 
-<span id="music-note" title="Musique">🎵</span>
+<span id="music-note" title="Musique">🔊</span>
 
-<audio id="music" loop>
-  <source src="musique.mp3" type="audio/mpeg">
+<audio id="music" loop preload="auto">
+  <source id="music-src" src="" type="audio/mpeg">
 </audio>
 
 <script>
 /* ── Prénom ── */
 document.getElementById("titre").textContent = "Hey " + prenom + "… 😊";
 
-/* ── Musique MP3 ── */
+/* ── Audio ── */
 const music = document.getElementById("music");
 const note  = document.getElementById("music-note");
+document.getElementById("music-src").src = fichierMp3;
+music.load();
 
-document.addEventListener("click", function startAudio() {
-  music.play().then(() => { note.textContent = "🔊"; }).catch(() => {});
-  document.removeEventListener("click", startAudio);
-}, { capture: true });
+/* ── Lancement depuis le splash ── */
+function lancerExperience() {
+  music.play()
+    .then(() => {
+      note.textContent = "🔊";
+      // Cache le splash
+      const splash = document.getElementById("splash");
+      splash.classList.add("hidden");
+      setTimeout(() => splash.remove(), 900);
+      // Affiche le contenu
+      const main = document.getElementById("main");
+      main.style.opacity = "1";
+      // Centre le bouton non
+      setTimeout(centerNoBtn, 100);
+    })
+    .catch(() => {
+      // Si le navigateur refuse quand même (très rare ici)
+      // On laisse le splash visible avec un message
+      document.querySelector(".splash-sub").textContent = "Appuie une fois sur le bouton ⬆️";
+    });
+}
 
+/* ── Bouton mute/unmute ── */
 note.addEventListener("click", (e) => {
   e.stopPropagation();
   if (music.paused) { music.play(); note.textContent = "🔊"; }
@@ -118,7 +230,6 @@ function centerNoBtn() {
   noBtn.style.left = Math.round(window.innerWidth / 2 - noBtn.offsetWidth / 2) + "px";
   noBtn.style.top  = Math.round(window.innerHeight / 2 + 60) + "px";
 }
-window.addEventListener("load", centerNoBtn);
 window.addEventListener("resize", centerNoBtn);
 
 document.addEventListener("mousemove", function(e) {
@@ -139,27 +250,12 @@ noBtn.addEventListener("touchstart", function(e) {
   noBtn.style.top  = Math.floor(Math.random() * (window.innerHeight - noBtn.offsetHeight - margin) + margin) + "px";
 }, { passive: false });
 
-/* ══════════════════════════════════════════
-   ── Séquence de confirmation (5 étapes) ──
-   ══════════════════════════════════════════
-
-   Étape 1 → "Tu en es sûre ?"
-   Étape 2 → "Tu en es sûre sûre ?"
-   Étape 3 → "Tu en es sûre sûre sûre ?"
-   Étape 4 → "Tu en es sûre sûre sûre sûre ?"
-   Étape 5 → "Tu en es sûre sûre sûre sûre sûre ?"
-   → Final  → écran final ❤️
-*/
-
+/* ── Séquence de confirmation ── */
 let confirmStep = 0;
 const totalSteps = 5;
 
-// Génère "sûre" répété n fois
-function sureTimes(n) {
-  return Array(n).fill("sûre").join(" ");
-}
+function sureTimes(n) { return Array(n).fill("sûre").join(" "); }
 
-// Textes et emojis qui évoluent à chaque étape
 const stepEmojis   = ["🤔", "👀", "😏", "😭", "🥹"];
 const stepSubtexts = [
   "Réfléchis bien…",
@@ -170,13 +266,10 @@ const stepSubtexts = [
 ];
 
 function yesClicked() {
-  // Retire le bouton "Je réfléchis" dès le premier oui
   if (noBtn && noBtn.parentNode) noBtn.remove();
-
   confirmStep++;
 
   if (confirmStep <= totalSteps) {
-    // Construit la question avec "sûre" répété
     const question = "Tu en es " + sureTimes(confirmStep) + " ?";
     const emoji    = stepEmojis[confirmStep - 1];
     const subtext  = stepSubtexts[confirmStep - 1];
@@ -185,21 +278,17 @@ function yesClicked() {
     document.getElementById("main").innerHTML = `
       <h1 style="font-size:1.6em;">${emoji} ${question}</h1>
       <p style="color:#aaa; font-style:italic;">${subtext}</p>
-
       <div class="progress-bar">
-        <div class="progress-fill" style="width: ${progress}%;"></div>
+        <div class="progress-fill" style="width:${progress}%;"></div>
       </div>
       <p class="step-hint">${confirmStep} / ${totalSteps}</p>
-
       <button class="confirm-btn" onclick="yesClicked()"
         style="padding:15px 25px;font-size:18px;border-radius:15px;
                border:none;cursor:pointer;margin:15px;">
         Oui, certaine ! 💖
       </button>
     `;
-
   } else {
-    // ── Écran final ──
     showFinalScreen();
   }
 }
@@ -223,7 +312,6 @@ function openWhatsApp() {
   window.open("https://wa.me/22503881311", "_blank");
 }
 
-/* ── Pluie de cœurs ── */
 function startHearts() {
   setInterval(() => {
     const heart = document.createElement("div");
